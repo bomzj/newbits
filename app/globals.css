@@ -1,0 +1,18 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* main > article {
+
+} */
+
+@media (min-width: 768px) {
+  body>footer, body>header, body>main {
+    max-width: 700px;
+  }
+}
+
+a[role=button] {
+  display: block;
+  margin-bottom: var(--pico-spacing);
+}
