@@ -1,40 +1,72 @@
 'use client'
 
-import { useState } from 'react'
-import { useWallet, WithWallet } from '../wallet'
-import Redirect from '../Redirect'
+import { useState, useEffect, useCallback} from 'react'
+import { useRouter } from 'next/navigation'
+import { getPassword, setPassword, loadWallet, useWallet, WithWallet } from '../wallet'
 
-function UnlockWalletPage() {
-  const [password, setPassword] = useState('')
+export default function UnlockWalletPage() {
+  const [ready, setReady] = useState(false)
+  const { push } = useRouter()
+
+  const [inputPassword, setInputPassword] = useState('')
   const [unlocking, setUnlocking] = useState(false) 
-  const { status, unlock } = useWallet()
+  const [unlockFailed, setUnlockFailed] = useState(false)
+  
+  const unlock = useCallback(async (password) => {
+    setUnlocking(true)
+    const [error] = await loadWallet(password)
+    setUnlocking(false)
+
+    if (!error) {
+      setPassword(password)
+      push('/coins')
+    }
+    else if (error == 'not_found') 
+      push('/')
+    else 
+      setReady(true)
+
+    return !!error
+  }, [push])
+
+  useEffect(() => { 
+    unlock(getPassword()) 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   
   function onPasswordInput(e) {
-    setPassword(e.target.value)
+    setInputPassword(e.target.value)
+    // reset on password change
+    setUnlockFailed(false)
   }
 
-  function onUnlockButtonClick(e) {
+  async function onUnlockButtonClick(e) {
     e.preventDefault()
-    setUnlocking(true)
-    unlock(password)
+    
+    const error = await unlock(inputPassword)
+    setUnlockFailed(!!error)
   }
 
-  return (
-    <Redirect to="/" when={status == 'not_created'}>
-      <Redirect to="/coins" when={status == 'loaded'}>
-        <section>
-          <h1>Welcome Back!</h1>
-          <p>
-            Unlock your Guarda Wallet with your password.
-          </p>
-          <form onSubmit={onUnlockButtonClick}>
-            <input name="password" placeholder="Password" onInput={onPasswordInput} />
-            <button type="submit" disabled={!password || unlocking}>Unlock</button>
-          </form>
-        </section>
-      </Redirect>
-    </Redirect>
-  )
+  return ready &&
+    <section>
+      <h1>Welcome Back!</h1>
+      <p>
+        Unlock your Guarda Wallet with your password.
+      </p>
+      <form onSubmit={onUnlockButtonClick}>
+        <input 
+          name="password" 
+          placeholder="Password" 
+          onInput={onPasswordInput} 
+          aria-invalid={unlockFailed || null}
+          aria-describedby="invalid-helper"
+        />
+        {unlockFailed && 
+          <small id="invalid-helper">Incorrect password!</small>
+        }
+        <button className="grid" type="submit" disabled={unlocking}>Unlock</button>
+      </form>
+    </section>
 }
 
-export default WithWallet(UnlockWalletPage)
+//export default WithWallet(UnlockWalletPage)

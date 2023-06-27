@@ -12,6 +12,11 @@ export const parseEncryptedJsonFromStorage = async (key, password) => {
   return JSON.parse(decryptedJson)
 }
 
+export async function parseEncryptedJson(encryptedJson, password) {
+  const safeDecrypt = safeFn(decrypt)
+  return safeDecrypt(encryptedJson, password)
+}
+
 export function saveDataToStorage(key, data) {
   const json = JSON.stringify(data)
   localStorage.setItem(key, json)

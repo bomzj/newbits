@@ -1,9 +1,9 @@
 {
-  "name": "novius",
+  "name": "newbits",
   "version": "0.1.0",
   "private": true,
   "author": { "name": "Maksim Shamihulau"},
-  "keywords": ["vikingwallet", "vikingloot", "odinwallet"],
+  "keywords": ["crypto", "wallet"],
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
