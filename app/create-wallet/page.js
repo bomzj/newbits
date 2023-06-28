@@ -58,11 +58,12 @@ export default function CreateWalletPage() {
 
   return ready && 
     <section>
-      <h1>Protect your wallet with a password</h1>
+      <h1>Encrypt your wallet with a password</h1>
       <p>
-        The password you enter encrypts your private key and gives access to your funds. 
-        Please store your password in a safe place. 
-        We don’t keep your information and can’t restore it.
+        Protect your web crypto wallet with a strong password 
+        to ensure the highest level of security. 
+        Remember, NewBits is a non-custodial platform, which means we don&apos;t have 
+        access to your encrypted wallet and cannot assist with its restoration.
       </p>
       <form onSubmit={onCreateButtonClick}>
         <fieldset>

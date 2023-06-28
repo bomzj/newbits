@@ -23,17 +23,15 @@ export default function HomePage() {
 
   return ready && 
     <section>
-      <h1>Crypto Wallet</h1>
+      <h1>Welcome to NewBits Web Crypto Wallet!</h1>
       {/* <hgroup>
         <h1>Crypto Wallet</h1>
         <h4>Nullam dui arcu, malesuada et sodales eu, efficitur vitae dolor. Sed ultricies dolor non
         ante vulputate hendrerit. Vivamus sit amet suscipit sapien.</h4>
       </hgroup> */}
       <p>
-        Nullam dui arcu, malesuada et sodales eu, efficitur vitae dolor. Sed ultricies dolor non
-        ante vulputate hendrerit. Vivamus sit amet suscipit sapien. Nulla iaculis eros a elit
-        pharetra egestas. Nunc placerat facilisis cursus. Sed vestibulum metus eget dolor pharetra
-        rutrum.
+        It&apos;s a lightweight, non-custodial web wallet with a modern UI that doesn&apos;t require app installations or browser extensions. 
+        You solely own your keys; NewBits doesn&apos;t have access to them.
       </p>
       <Link href="/create-wallet" role='button'>Create a new wallet</Link>
       <Link href="/restore-wallet" role='button' className="secondary outline">Restore a wallet</Link>
