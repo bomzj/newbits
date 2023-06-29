@@ -1,11 +1,9 @@
 import '@picocss/pico/css/pico.min.css'
 import './globals.css'
 
-//import { PasswordProvider } from './password'
-
 export const metadata = {
-  title: 'Crypto Web Wallet',
-  description: 'Crypto Web Wallet',
+  title: 'NewBits - Web Crypto Wallet',
+  description: 'A lightweight, non-custodial(private), multi-chain, easy-to-use web crypto wallet on desktop and mobile devices.',
 }
 
 export default function RootLayout({ children }) {
@@ -15,15 +13,15 @@ export default function RootLayout({ children }) {
         {/* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"/> */}
       </head>
       <body>
-          {/* <header> */}
-          {/* <nav>
+        {/* <header> 
+          <nav>
             <ul>
               <li>Brand</li>
             </ul>
-          </nav> */}
-        {/* </header> */}
+          </nav>
+        </header> */}
         <main className="container">
-            {children}
+          {children}
         </main>
       </body>
     </html>

@@ -1,18 +1,32 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
-/* main > article {
-
-} */
-
 @media (min-width: 768px) {
-  body>footer, body>header, body>main {
-    max-width: 700px;
+  /* this only works for element without 'container' class */
+  /* Not used */
+  /*body>footer, body>header, body>main {
+    max-width: 768px;
+  }*/
+
+  /* Probably, a page can define it's width itself */
+  body > main.container {
+    max-width: 768px;
   }
 }
 
 a[role=button] {
   display: block;
   margin-bottom: var(--pico-spacing);
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+/* Show image even if any table cell has width of 100% */
+td img {
+  max-width: initial;
+}
+
+/* Decrease enormous top padding */
+article:has(nav) {
+  padding: 9.5px var(--pico-block-spacing-horizontal)
 }
