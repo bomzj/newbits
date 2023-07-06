@@ -2,8 +2,13 @@
   "name": "newbits",
   "version": "0.1.0",
   "private": true,
-  "author": { "name": "Maksim Shamihulau"},
-  "keywords": ["crypto", "wallet"],
+  "author": {
+    "name": "Maksim Shamihulau"
+  },
+  "keywords": [
+    "crypto",
+    "wallet"
+  ],
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
@@ -14,12 +19,10 @@
     "@picocss/pico": "^2.0.0-alpha1",
     "autoprefixer": "10.4.14",
     "eslint": "8.38.0",
-    "eslint-config-next": "13.3.0",
-    "next": "^13.3.1",
+    "eslint-config-next": "^13.4.8",
+    "next": "^13.4.8",
     "postcss": "8.4.21",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "tailwindcss": "3.3.1",
-    "usehooks-ts": "^2.9.1"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

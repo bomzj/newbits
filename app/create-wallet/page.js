@@ -1,13 +1,9 @@
 'use client'
-
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { getPassword, createWallet, loadWallet, getWallet } from '../wallet'
+import { useWallet } from '../WalletContext'
 
 export default function CreateWalletPage() {
-  const [ready, setReady] = useState(false)
-  const { push } = useRouter()
-  
+  const { status, createWallet } = useWallet()
   const [passwordDisabled, setPasswordDisabled] = useState(false)
   const [password, setPassword] = useState('')
   const [createButtonClicked, setCreateButtonClicked] = useState(false)
@@ -15,18 +11,6 @@ export default function CreateWalletPage() {
 
   const shouldValidatePassword = !passwordDisabled && createButtonClicked
   const isPasswordValid = !!password
-  
-  async function init() {
-    const password = getPassword()
-    const [error] = await loadWallet(password)
-    
-    if (!error) push('/coins')
-    else if (error == 'not_found') setReady(true)
-    else push('/unlock-wallet')
-  }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { init() }, [])
 
   function onNoPasswordToggle(e) {
     setPasswordDisabled(e.target.checked)
@@ -44,19 +28,12 @@ export default function CreateWalletPage() {
     if (!canCreateWallet) return
     
     setWalletCreating(true)
-    const [error] = await createWallet(password)
-    
-    if (!error) {
-      setPassword(password)
-      push('/coins')
-    } 
-    else 
-      console.error(error)
+    createWallet(password)
   }
 
   console.log('create-wallet')
 
-  return ready && 
+  return (
     <section>
       <h1>Encrypt your wallet with a password</h1>
       <p>
@@ -86,6 +63,5 @@ export default function CreateWalletPage() {
         <input type="submit" value="Create" disabled={walletCreating} />
       </form>
     </section>
+  )
 }
-
-//export default WithWallet(CreateWalletPage)

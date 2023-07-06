@@ -1,53 +1,39 @@
 'use client'
-
 import { useState, useEffect, useCallback} from 'react'
-import { useRouter } from 'next/navigation'
-import { getPassword, setPassword, loadWallet, useWallet, WithWallet } from '../wallet'
+import { useWallet } from '../WalletContext'
 
 export default function UnlockWalletPage() {
-  const [ready, setReady] = useState(false)
-  const { push } = useRouter()
+  const { status, unlockWallet } = useWallet()
+  const [password, setPassword] = useState('')
+  const [unlockFailed, setUnlockFailed] = useState()
 
-  const [inputPassword, setInputPassword] = useState('')
-  const [unlocking, setUnlocking] = useState(false) 
-  const [unlockFailed, setUnlockFailed] = useState(false)
+  const unlocking = status == 'loading'
   
-  const unlock = useCallback(async (password) => {
-    setUnlocking(true)
-    const [error] = await loadWallet(password)
-    setUnlocking(false)
-
-    if (!error) {
-      setPassword(password)
-      push('/coins')
-    }
-    else if (error == 'not_found') 
-      push('/')
-    else 
-      setReady(true)
-
-    return !!error
-  }, [push])
-
   useEffect(() => { 
-    unlock(getPassword()) 
+    console.log('UnlockWalletPage useEffect', status)
+    // Unlocking just failed
+    if (status == 'locked' && password) {
+      setPassword('')
+      setUnlockFailed(true)
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [status])
   
   function onPasswordInput(e) {
-    setInputPassword(e.target.value)
-    // reset on password change
     setUnlockFailed(false)
+    setPassword(e.target.value)
   }
 
-  async function onUnlockButtonClick(e) {
+  function onUnlockButtonClick(e) {
     e.preventDefault()
     
-    const error = await unlock(inputPassword)
-    setUnlockFailed(!!error)
+    if (password)
+      unlockWallet(password)
+    else
+      setUnlockFailed(true)
   }
-
-  return ready &&
+  console.log('UnlockWalletPage', status, 'unlocking', unlocking)
+  return (
     <section>
       <h1>Welcome Back!</h1>
       <p>
@@ -60,13 +46,14 @@ export default function UnlockWalletPage() {
           onInput={onPasswordInput} 
           aria-invalid={unlockFailed || null}
           aria-describedby="invalid-helper"
+          value={password}
+          disabled={unlocking}
         />
         {unlockFailed && 
           <small id="invalid-helper">Incorrect password!</small>
         }
-        <button className="grid" type="submit" disabled={unlocking}>Unlock</button>
+        <input type="submit" value="Unlock" disabled={unlocking} />
       </form>
     </section>
+  )
 }
-
-//export default WithWallet(UnlockWalletPage)

@@ -9,6 +9,10 @@
   body > main.container {
     max-width: 768px;
   }
+
+  body > nav.container {
+    max-width: 950px;
+  }
 }
 
 a[role=button] {
