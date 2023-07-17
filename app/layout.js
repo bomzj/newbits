@@ -1,8 +1,5 @@
 import '@picocss/pico/css/pico.min.css'
 import './globals.css'
-// import { WalletProvider } from './wallet'
-// import { RedirectHandler } from './RedirectHandler'
-// import { Nav } from './Nav'
 import WalletLayout from './WalletLayout'
 
 export const metadata = {
@@ -21,15 +18,6 @@ export default function RootLayout({ children }) {
         <WalletLayout>
           {children}
         </WalletLayout>
-        
-        {/* <WalletProvider>
-          <RedirectHandler>
-            <Nav />
-            <main className="container">
-              {children}
-            </main>
-          </RedirectHandler>
-        </WalletProvider> */}
       </body>
     </html>
   )
