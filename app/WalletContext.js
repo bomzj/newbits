@@ -1,42 +1,24 @@
 import { useContext, createContext, useState, useEffect, useCallback } from 'react'
+import { tryCatch, pipeWith, always, ifElse, identity, compose, curry,  otherwise,
+  cond, either, is, andThen, or, bind, pipe, partialRight } from 'ramda'
+import { Either } from 'ramda-fantasy'
+import { isError, isOk } from './result'
 import { useSessionStorage } from './useSessionStorage'
-import { decrypt } from './encryption'
-import { 
-  saveDataToStorage,
-  saveDataEncryptedToStorage } from './storage'
+import { encrypt, decrypt } from './encryption'
 
-import safeFn from './safeFn'
+export async function parseEncryptedLocalStorage(key, password) {
+  const decryptOrPass = partialRight(
+    async (data, password) => data && password ? decrypt(data, password) : data,
+    [password]
+  )
 
-/** 
- * @typedef {'not_found' | 'incorrect_password'} LoadError
- * @typedef {{name:number}} Account
- * @returns {Promise<[LoadError, Account[]]>} 
-*/
-export async function loadWallet(password) {
-  const json = localStorage.getItem('wallet')
-  
-  if (!json) return ['not_found', null]
-
-  const safeParse = safeFn(JSON.parse)
-
-  if (password) {
-    const safeDecrypt = safeFn(decrypt)
-    const [error, decryptedJson] = await safeDecrypt(json, password)
-    
-    if (error) return ['incorrect_password', null]
-    
-    const [parseError, data] = safeParse(decryptedJson)
-    return [parseError && 'incorrect_password', data]
-  }
-  
-  const [error, data] = safeParse(json)
-  return [error && 'incorrect_password', data]
-}
-  
-export async function saveWallet(accounts, password) {
-  password ? 
-    await saveDataEncryptedToStorage('wallet', accounts, password) : 
-    saveDataToStorage('wallet', accounts)
+  return pipe(
+    key => localStorage.getItem(key),
+    decryptOrPass,
+    andThen(JSON.parse),
+    andThen(Either.Right),
+    otherwise(Either.Left)
+  )(key)
 }
 
 const WalletContext = createContext()
@@ -57,7 +39,7 @@ export const useWallet = () => useContext(WalletContext)
 
 // TODO: instead of status it maybe better to have 
 // loading, loaded, error props
-// where error: incorrect_password, wallet_not_exists
+// where error: incorrect_password, wallet_not_exists(not_found)
 // or status: loading, not_loaded, loaded with errors
 export function WalletProvider({ children }) {
   /** @type [WalletStatus, React.Dispatch<WalletStatus>] */
@@ -65,29 +47,31 @@ export function WalletProvider({ children }) {
   const [password, setPassword] = useSessionStorage('password')
   const [accounts, setAccounts] = useState()
   
-  const load = useCallback(async () => {
+  const loadWallet = useCallback(async () => {
     setStatus('loading')
-    const [error, accounts] = await loadWallet(password) 
+    const result = await parseEncryptedLocalStorage('wallet', password) 
     
     const newStatus =
-      error == 'not_found'          ? 'not_exists' :
-      error == 'incorrect_password' ? 'locked' 
+      isOk(result) && !result.value ? 'not_exists' :
+      isError(result)               ? 'locked' 
                                     : 'loaded'
 
     setStatus(newStatus)
     setAccounts(accounts)
   }, [password])
 
-  function save() {
-    saveWallet(accounts, password)
+  async function saveWallet() {
+    password ? 
+      await saveDataEncryptedToStorage('wallet', wallet, password) : 
+      saveDataToStorage('wallet', wallet)
   }
 
   //reload locked wallet on password change only
   useEffect(() => {
     console.log('WalletProvider useEffect status:', status)
-    load()
+    loadWallet()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [load])
+  }, [loadWallet])
 
   function createWallet(password) {
     // TODO: implement account creating

@@ -1,21 +1,4 @@
-import { safeFn } from './safeFn'
 import { encrypt, decrypt } from './encryption'
-
-export const parseJsonFromStorage = (key) => {
-  const json = localStorage.getItem(key)
-  return JSON.parse(json)
-}
-
-export const parseEncryptedJsonFromStorage = async (key, password) => {
-  const json = localStorage.getItem(key)
-  const decryptedJson = await decrypt(json, password)
-  return JSON.parse(decryptedJson)
-}
-
-export async function parseEncryptedJson(encryptedJson, password) {
-  const safeDecrypt = safeFn(decrypt)
-  return safeDecrypt(encryptedJson, password)
-}
 
 export function saveDataToStorage(key, data) {
   const json = JSON.stringify(data)
