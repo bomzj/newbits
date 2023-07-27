@@ -37,7 +37,7 @@ export default function UnlockWalletPage() {
     <section>
       <h1>Welcome Back!</h1>
       <p>
-        Unlock your Guarda Wallet with your password.
+        Unlock your wallet with your password.
       </p>
       <form onSubmit={onUnlockButtonClick}>
         <input 
