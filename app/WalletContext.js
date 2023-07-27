@@ -1,25 +1,10 @@
 import { useContext, createContext, useState, useEffect, useCallback } from 'react'
-import { tryCatch, pipeWith, always, ifElse, identity, compose, curry,  otherwise,
-  cond, either, is, andThen, or, bind, pipe, partialRight } from 'ramda'
-import { Either } from 'ramda-fantasy'
+import { tryCatch, pipeWith, always, ifElse, identity, compose, 
+  cond, either, is, or, bind, invoker, map } from 'ramda'
 import { isError, isOk } from './result'
 import { useSessionStorage } from './useSessionStorage'
-import { encrypt, decrypt } from './encryption'
-
-export async function parseEncryptedLocalStorage(key, password) {
-  const decryptOrPass = partialRight(
-    async (data, password) => data && password ? decrypt(data, password) : data,
-    [password]
-  )
-
-  return pipe(
-    key => localStorage.getItem(key),
-    decryptOrPass,
-    andThen(JSON.parse),
-    andThen(Either.Right),
-    otherwise(Either.Left)
-  )(key)
-}
+import { decryptFromLocalStorage, encryptToLocalStorage } from './encryptedLocalStorage'
+//import { getAddress } from './bitcoin'
 
 const WalletContext = createContext()
 
@@ -28,7 +13,7 @@ const WalletContext = createContext()
  * @typedef {{ 
    status: WalletStatus, 
    error,
-   accounts: {name:number}[],
+   accounts,
    create(password),
    unlock(password)
   }} Wallet 
@@ -45,11 +30,18 @@ export function WalletProvider({ children }) {
   /** @type [WalletStatus, React.Dispatch<WalletStatus>] */
   const [status, setStatus] = useState('loading')
   const [password, setPassword] = useSessionStorage('password')
-  const [accounts, setAccounts] = useState()
+  const [accounts, setAccounts] = useState({})
+
+    // try to load private keys on init
+    useEffect(() => {
+      loadWallet(password)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
   
-  const loadWallet = useCallback(async () => {
+  async function loadWallet(password) {
     setStatus('loading')
-    const result = await parseEncryptedLocalStorage('wallet', password) 
+
+    const result = await decryptFromLocalStorage('keys', password) 
     
     const newStatus =
       isOk(result) && !result.value ? 'not_exists' :
@@ -57,43 +49,57 @@ export function WalletProvider({ children }) {
                                     : 'loaded'
 
     setStatus(newStatus)
-    setAccounts(accounts)
-  }, [password])
-
-  async function saveWallet() {
-    password ? 
-      await saveDataEncryptedToStorage('wallet', wallet, password) : 
-      saveDataToStorage('wallet', wallet)
+    
+    if (newStatus == 'loaded') {
+      setAccounts(toAccounts(result.value))
+    }
   }
 
-  //reload locked wallet on password change only
-  useEffect(() => {
-    console.log('WalletProvider useEffect status:', status)
-    loadWallet()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadWallet])
+  async function saveWallet(accounts, password) {
+    const accountToKey = account => account.key
+    const accountsToKeys = map(accountToKey)
+    const privateKeys = map(accountsToKeys, accounts)
+    await encryptToLocalStorage('keys', privateKeys, password)
+    console.log('wallet saved to local storage.')
+  }
 
-  function createWallet(password) {
-    // TODO: implement account creating
-    saveWallet([], password)
-    .then(() => setPassword(password))
+  async function createWallet(password) {
+    // empty wallet
+    const newAccounts = { btc: [] }
+    await saveWallet(newAccounts, password)
+    setPassword(password)
+    await loadWallet(password)
   }
 
   function unlockWallet(password) {
     setPassword(password)
+    loadWallet(password)
+  }
+
+  function toAccounts(privateKeys) {
+    const getAddress = () => 1
+    const keyToAccount = privateKey => ({ address: getAddress(privateKey), privateKey })
+    const keysToAccounts = map(keyToAccount)
+    return map(keysToAccounts, privateKeys)
+  }
+
+  function toAddresses(accounts) {
+    const accountToAddress = account => account.address
+    const accountsToAddresses = map(accountToAddress)
+    return map(accountsToAddresses, accounts)
   }
 
   console.log('WalletProvider', status)
 
-  const wallet = {
+  const walletContext = {
     status,
-    accounts,
+    addresses: toAddresses(accounts),
     createWallet,
     unlockWallet
   }
   
   return (
-    <WalletContext.Provider value={wallet}>
+    <WalletContext.Provider value={walletContext}>
       {children}
     </WalletContext.Provider>
   )

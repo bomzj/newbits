@@ -31,8 +31,6 @@ export default function CreateWalletPage() {
     createWallet(password)
   }
 
-  console.log('create-wallet')
-
   return (
     <section>
       <h1>Encrypt your wallet with a password</h1>

@@ -1,3 +1,4 @@
+import { is } from 'ramda'
 import { Either } from "ramda-fantasy"
 
 export const isError = result => is(Either, result) && Either.isLeft(result)

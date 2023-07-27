@@ -24,7 +24,7 @@ describe('Redirect rules when wallet not created yet', () => {
 describe('Redirect rules when wallet exists and not encrypted', () => {
 
   beforeEach(() => {
-    localStorage.setItem('wallet', '[]')
+    localStorage.setItem('keys', '{}')
   });
   
   ['/', '/create-wallet', '/unlock-wallet']
@@ -48,7 +48,7 @@ describe('Redirect rules when wallet exists and encrypted', () => {
 
   beforeEach(() => {
     // scramble wallet data to mimic encryption
-    localStorage.setItem('wallet', 'fdsafsafas')
+    localStorage.setItem('keys', 'fdsafsafas')
   });
   
   ['/', '/create-wallet', '/coins']

@@ -25,7 +25,6 @@ export default function ProtectRoute({children}) {
   const shouldRedirect = !(allowedPaths[status] || /(?:)/).test(path)
 
   useEffect(() => {
-    console.log('ProtectRoute useEffect status:', status)
     if (shouldRedirect) 
       push(redirectPaths[status])
   // eslint-disable-next-line react-hooks/exhaustive-deps

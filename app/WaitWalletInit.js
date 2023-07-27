@@ -6,7 +6,6 @@ export default function WaitWalletInit({ children }) {
   const [shouldRenderChildren, setShouldRenderChildren] = useState(false)
 
   useEffect(() => {
-    console.log('WaitWalletInit useEffect', status)
     if (status != 'loading') setShouldRenderChildren(true)
   }, [status])
 
