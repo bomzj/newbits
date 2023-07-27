@@ -8,18 +8,18 @@ export default function ProtectRoute({children}) {
   const { status } = useWallet()
   
   const allowedPaths = {
-    //  /coins or /coins/*
-    loaded: /^\/coins(\/.*)?$/,
-    //  /unlock-wallet
+    // everything except /welcome, /create-wallet, /unlock-wallet
+    loaded: /^(?!\/(?:unlock-wallet|create-wallet|welcome)(?:\/|$)).*$/,
+    // allows /unlock-wallet
     locked: /\/unlock-wallet/,
-    //  / or /create-wallet
-    not_exists: /^(\/|\/create-wallet)$/
+    // allows /welcome or /create-wallet
+    not_exists: /^(\/welcome|\/create-wallet)$/
   }
 
   const redirectPaths = {
-    loaded: '/coins',
+    loaded: '/',
     locked: '/unlock-wallet',
-    not_exists: '/'
+    not_exists: '/welcome'
   }
   
   const shouldRedirect = !(allowedPaths[status] || /(?:)/).test(path)

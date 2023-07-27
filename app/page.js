@@ -1,21 +1,40 @@
-import Link from 'next/link'
+'use client'
+import { useState, useEffect, useCallback} from 'react'
+import { useRouter } from 'next/navigation'
+import { useWallet } from './WalletContext'
 
- export default function HomePage() {
+export default function CoinsPage() {
+
   return (
-    <section>
-      <h1>Welcome to NewBits Web Crypto Wallet!</h1>
-      {/* <hgroup>
-        <h1>Crypto Wallet</h1>
-        <h4>Nullam dui arcu, malesuada et sodales eu, efficitur vitae dolor. Sed ultricies dolor non
-        ante vulputate hendrerit. Vivamus sit amet suscipit sapien.</h4>
-      </hgroup> */}
-      <p>
-        It&apos;s a lightweight, non-custodial web wallet with a modern UI that doesn&apos;t require app installations or browser extensions. 
-        You solely own your keys; NewBits doesn&apos;t have access to them.
-      </p>
-      <Link href="/create-wallet" role='button'>Create a new wallet</Link>
-      <Link href="/restore-wallet" role='button' className="secondary outline">Restore a wallet</Link>
-      <footer><small>Duis nec elit placerat, suscipit nibh quis, finibus neque.</small></footer>
-    </section>
+    <>
+      <section>
+        <h1 className='center'>$1500</h1>
+      </section>
+      <section>
+        <table>
+          <tbody>
+          {[1,2].map((i) => (
+            <tr key={i}>
+              <td>
+                <img src='https://placehold.co/48x48'/>
+              </td>
+              <td style={{width: '100%'}}>
+                <hgroup>
+                  <h2>BTC</h2>
+                  <h3>Bitcoin</h3>
+                </hgroup>
+              </td>
+              <td>
+                <hgroup>
+                  <h2>0.44</h2>
+                  <h3>$144</h3>
+                </hgroup> 
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
+      </section>
+    </>
   )
 }

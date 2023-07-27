@@ -1,24 +1,23 @@
+/* eslint-disable max-nested-callbacks */
 const baseUrl = Cypress.config('baseUrl')
 
 describe('Redirect rules when wallet not created yet', () => {
   
-  ['/', '/create-wallet']
-    .forEach(url => 
-      it(`can visit "${url}" page`, () =>
-        cy.visit(url)
-          .url()
-          .should('eq', baseUrl + url)
-      )
-    );
-
-  ['/unlock-wallet', '/coins']
-    .forEach(url => 
-      it(`Should redirect to "/" when visiting "${url}"`, () => 
-        cy.visit(url)
-          .url()
-          .should('eq', baseUrl + '/')
-      )
+  ['/welcome', '/create-wallet'].forEach(url => 
+    it(`can visit "${url}" page`, () =>
+      cy.visit(url)
+        .url()
+        .should('eq', baseUrl + url)
     )
+  );
+
+  ['/unlock-wallet', '/'].forEach(url => 
+    it(`Should redirect to "/welcome" when visiting "${url}"`, () => 
+      cy.visit(url)
+        .url()
+        .should('eq', baseUrl + '/welcome')
+    )
+  )
 })
 
 describe('Redirect rules when wallet exists and not encrypted', () => {
@@ -27,17 +26,16 @@ describe('Redirect rules when wallet exists and not encrypted', () => {
     localStorage.setItem('keys', '{}')
   });
   
-  ['/', '/create-wallet', '/unlock-wallet']
-    .forEach(url => 
-      it(`Should redirect to "/coins" when visiting "${url}"`, () => 
+  ['/welcome', '/create-wallet', '/unlock-wallet'].forEach(url => 
+      it(`Should redirect to "/" when visiting "${url}"`, () => 
         cy.visit(url)
           .url()
-          .should('eq', baseUrl + '/coins')
+          .should('eq', baseUrl + '/')
       )
     )
   
-  it('can visit "/coins" page', () => {
-    const url = '/coins'
+  it('can visit "/" page', () => {
+    const url = '/'
     cy.visit(url)
       .url()
       .should('eq', baseUrl + url)
@@ -51,7 +49,7 @@ describe('Redirect rules when wallet exists and encrypted', () => {
     localStorage.setItem('keys', 'fdsafsafas')
   });
   
-  ['/', '/create-wallet', '/coins']
+  ['/welcome', '/create-wallet', '/']
     .forEach(url => 
       it(`Should redirect to "/unlock-wallet" when visiting "${url}"`, () => 
         cy.visit(url)
