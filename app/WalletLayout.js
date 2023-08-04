@@ -11,10 +11,10 @@ export default function WalletLayout({ children }) {
     <WalletProvider>
       <WaitWalletInit>
         <ProtectRoute>
-          <Nav />
           <main className="container">
             {children}
           </main>
+          <Nav />
         </ProtectRoute>
       </WaitWalletInit>
     </WalletProvider>

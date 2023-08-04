@@ -7,8 +7,8 @@ export default function Nav({ children }) {
     <nav className="container">
       <ul>
         <li><strong>Newbits</strong></li>
-        <li><Link href="/coins/send">Send</Link></li>
-        <li><Link href="/coins/receive">Receive</Link></li>
+        <li><Link href="/receive">Receive</Link></li>
+        <li><Link href="/send">Send</Link></li>
       </ul>
       <ul>
         

@@ -4,7 +4,7 @@ import { tryCatch, pipeWith, always, ifElse, identity, compose,
 import { isError, isOk } from './result'
 import { useSessionStorage } from './useSessionStorage'
 import { decryptFromLocalStorage, encryptToLocalStorage } from './encryptedLocalStorage'
-//import { getAddress } from './bitcoin'
+import { generatePrivateKey, getAddress, getBalance } from './bitcoin'
 
 const WalletContext = createContext()
 
@@ -14,10 +14,14 @@ const WalletContext = createContext()
    status: WalletStatus, 
    error,
    accounts,
-   create(password),
-   unlock(password)
+   event: Event,
+   createWallet(password),
+   unlockWallet(password),
+   createAddress(coinCode)
   }} Wallet 
 */
+
+/** @typedef {'creating_address' | 'address_created' } Event */
 
 /** @returns {Wallet} */
 export const useWallet = () => useContext(WalletContext)
@@ -31,17 +35,21 @@ export function WalletProvider({ children }) {
   const [status, setStatus] = useState('loading')
   const [password, setPassword] = useSessionStorage('password')
   const [accounts, setAccounts] = useState({})
+  
+  // TODO: Rethink wallet statuses to play nicely with events
+  /** @type [Event, React.Dispatch<Event>] */
+  const [event, setEvent] = useState()
 
-    // try to load private keys on init
-    useEffect(() => {
-      loadWallet(password)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+  // try to load private keys on init
+  useEffect(() => {
+    loadWallet(password)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   
   async function loadWallet(password) {
     setStatus('loading')
 
-    const result = await decryptFromLocalStorage('keys', password) 
+    const result = await decryptFromLocalStorage('accounts', password) 
     
     const newStatus =
       isOk(result) && !result.value ? 'not_exists' :
@@ -51,15 +59,15 @@ export function WalletProvider({ children }) {
     setStatus(newStatus)
     
     if (newStatus == 'loaded') {
-      setAccounts(toAccounts(result.value))
+      setAccounts(result.value)
     }
   }
 
   async function saveWallet(accounts, password) {
-    const accountToKey = account => account.key
-    const accountsToKeys = map(accountToKey)
-    const privateKeys = map(accountsToKeys, accounts)
-    await encryptToLocalStorage('keys', privateKeys, password)
+    // const accountToKey = account => account.privateKey
+    // const accountsToKeys = map(accountToKey)
+    // const privateKeys = map(accountsToKeys, accounts)
+    await encryptToLocalStorage('accounts', accounts, password)
     console.log('wallet saved to local storage.')
   }
 
@@ -76,26 +84,36 @@ export function WalletProvider({ children }) {
     loadWallet(password)
   }
 
-  function toAccounts(privateKeys) {
-    const getAddress = () => 1
-    const keyToAccount = privateKey => ({ address: getAddress(privateKey), privateKey })
-    const keysToAccounts = map(keyToAccount)
-    return map(keysToAccounts, privateKeys)
+  async function createAddress(coinCode) {
+    // TODO: Implement address generation based on coinCode argument
+    setEvent('creating_address')
+    const privateKey = generatePrivateKey()
+    const address = getAddress(privateKey)
+    const account = { address, privateKey, balance: 0, transactions: [] }
+    const newAccounts = { btc: [...accounts.btc, account] }
+    await saveWallet(newAccounts, password)
+    setAccounts(newAccounts)
+    setEvent('address_created')
   }
 
-  function toAddresses(accounts) {
-    const accountToAddress = account => account.address
-    const accountsToAddresses = map(accountToAddress)
-    return map(accountsToAddresses, accounts)
-  }
+  // function toAccounts(privateKeys) {
+  //   const keyToAccount = privateKey => ({ 
+  //     address: getAddress(privateKey), 
+  //     privateKey
+  //   })
+  //   const keysToAccounts = map(keyToAccount)
+  //   return map(keysToAccounts, privateKeys)
+  // }
 
   console.log('WalletProvider', status)
 
   const walletContext = {
     status,
-    addresses: toAddresses(accounts),
+    accounts,
+    event,
     createWallet,
-    unlockWallet
+    unlockWallet,
+    createAddress
   }
   
   return (

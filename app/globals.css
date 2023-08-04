@@ -5,7 +5,7 @@
     max-width: 768px;
   }*/
 
-  /* Probably, a page can define it's width itself */
+  /* Probably, a page can define its width itself */
   body > main.container {
     max-width: 768px;
   }
@@ -30,7 +30,25 @@ td img {
   max-width: initial;
 }
 
+td { 
+  border-bottom: 0;
+}
+
 /* Decrease enormous top padding */
 article:has(nav) {
   padding: 9.5px var(--pico-block-spacing-horizontal)
+}
+
+ul li {
+  list-style: none;
+}
+
+/* Decrease enormous top padding */
+body > footer, body > header, body > main {
+  padding: calc(var(--pico-block-spacing-vertical) / 2) 0;
+}
+
+/* Receive Page styles */
+td > h1 {
+  margin-bottom: 10px;
 }
