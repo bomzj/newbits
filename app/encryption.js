@@ -45,7 +45,7 @@ export async function encrypt(data, password) {
   )
 
   const encryptedContentArr = new Uint8Array(encryptedContent)
-  let buff = new Uint8Array(
+  const buff = new Uint8Array(
     salt.byteLength + iv.byteLength + encryptedContentArr.byteLength
   )
   buff.set(salt, 0)
