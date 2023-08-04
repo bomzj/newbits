@@ -1,6 +1,6 @@
 # Newbits - Multi-chain/Multi-coin Web Crypto Wallet
 
-Newbits is a lightweight, non-custodial (private) web crypto wallet developed using React, Next.js, and Picocss. It provides users with a secure and easy-to-use solution for managing multiple cryptocurrencies directly from their desktop and mobile devices. The wallet stores your private keys locally in the browser, ensuring maximum security and control over your assets.
+Newbits is a lightweight, non-custodial (private) web crypto wallet developed using React, Next.js, and Pico CSS. It provides users with a secure and easy-to-use solution for managing multiple cryptocurrencies directly from their desktop and mobile devices. The wallet stores your private keys locally in the browser, ensuring maximum security and control over your assets.
 
 ## Features
 
