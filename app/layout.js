@@ -7,7 +7,7 @@ export const metadata = {
   description: 'A lightweight, non-custodial(private), multi-chain, easy-to-use web crypto wallet on desktop and mobile devices.',
 }
 
-export default function RootLayout({ children }) {
+export function RootLayout({ children }) {
   console.log('layout')
   return (
     <html lang="en" data-theme="light">
@@ -22,3 +22,13 @@ export default function RootLayout({ children }) {
     </html>
   )
 }
+
+// eslint-disable-next-line fp/no-let
+let layout = RootLayout
+
+if (process?.env.NEXT_PHASE == 'phase-production-build') {
+  // eslint-disable-next-line fp/no-mutation
+  layout = () => null
+}
+
+export default layout
