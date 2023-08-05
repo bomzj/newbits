@@ -43,6 +43,7 @@ export function WalletProvider({ children }) {
   // try to load private keys on init
   useEffect(() => {
     const password = sessionStorage.getItem('password')
+    setPassword(password)
     loadWallet(password)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
