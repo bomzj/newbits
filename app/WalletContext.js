@@ -33,7 +33,7 @@ export const useWallet = () => useContext(WalletContext)
 export function WalletProvider({ children }) {
   /** @type [WalletStatus, React.Dispatch<WalletStatus>] */
   const [status, setStatus] = useState('loading')
-  const [password, setPassword] = useSessionStorage('password')
+  const [password, setPassword] = useState() //useSessionStorage('password')
   const [accounts, setAccounts] = useState({})
   
   // TODO: Rethink wallet statuses to play nicely with events
@@ -42,6 +42,7 @@ export function WalletProvider({ children }) {
 
   // try to load private keys on init
   useEffect(() => {
+    const password = sessionStorage.getItem('password')
     loadWallet(password)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -76,11 +77,13 @@ export function WalletProvider({ children }) {
     const newAccounts = { btc: [] }
     await saveWallet(newAccounts, password)
     setPassword(password)
+    sessionStorage.setItem('password', password)
     await loadWallet(password)
   }
 
   function unlockWallet(password) {
     setPassword(password)
+    sessionStorage.setItem('password', password)
     loadWallet(password)
   }
 
