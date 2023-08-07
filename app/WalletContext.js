@@ -13,7 +13,7 @@ const WalletContext = createContext()
  * @typedef {{ 
    status: WalletStatus, 
    error,
-   accounts,
+   accounts: {},
    event: Event,
    createWallet(password),
    unlockWallet(password),

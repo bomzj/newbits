@@ -49,6 +49,6 @@ body > footer, body > header, body > main {
 }
 
 /* Receive Page styles */
-td > h1 {
+td h1 {
   margin-bottom: 10px;
 }
