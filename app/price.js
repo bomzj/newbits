@@ -2,9 +2,9 @@ import { tryCatch, pipeWith, always, ifElse, identity, compose,
   cond, either, is, or, bind, invoker, map, prop } from 'ramda'
 import memoizee from "memoizee"
 
-function toCoingeckoId(coinId) {
+function toCoingeckoId(code) {
   return (
-    coinId == 'btc' ? 'bitcoin' : undefined
+    code == 'btc' ? 'bitcoin' : undefined
   )
 }
 
@@ -13,8 +13,8 @@ function toCoingeckoId(coinId) {
 // since this free API is limitted to 10-30 requests/minute.
 // Need to check how this free API blocks by domain or IP-address.
 // if it blocks by domain then appropriate cloud caching is required.
-export const getPriceInUsd = memoizee(async (coinId) => {
-  const id = toCoingeckoId(coinId)
+export const getPriceInUsd = memoizee(async (code) => {
+  const id = toCoingeckoId(code)
   
   return (
     fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd`)
@@ -23,7 +23,7 @@ export const getPriceInUsd = memoizee(async (coinId) => {
   )
 }, { maxAge: 60000, preFetch: true })
 
-export function format(priceInUsd) {
+export function formatInUsd(value) {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -33,5 +33,5 @@ export function format(priceInUsd) {
     //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
   })
 
-  return formatter.format(priceInUsd)
+  return formatter.format(value)
 }

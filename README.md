@@ -1,4 +1,4 @@
-**Note** Newbits is under active development(pre-alpha) and will support Bitcoin testnet initially. 
+> **Note:** The Newbits is under active development(pre-alpha) and will support Bitcoin testnet initially. 
 
 # Newbits - Multi-chain/Multi-coin Web Crypto Wallet
 

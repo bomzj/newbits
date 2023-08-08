@@ -34,7 +34,7 @@ export function WalletProvider({ children }) {
   /** @type [WalletStatus, React.Dispatch<WalletStatus>] */
   const [status, setStatus] = useState('loading')
   const [password, setPassword] = useState() //useSessionStorage('password')
-  const [accounts, setAccounts] = useState({})
+  const [accounts, setAccounts] = useState([])
   
   // TODO: Rethink wallet statuses to play nicely with events
   /** @type [Event, React.Dispatch<Event>] */
@@ -75,7 +75,7 @@ export function WalletProvider({ children }) {
 
   async function createWallet(password) {
     // empty wallet
-    const newAccounts = { btc: [] }
+    const newAccounts = []
     await saveWallet(newAccounts, password)
     setPassword(password)
     sessionStorage.setItem('password', password)
@@ -88,26 +88,27 @@ export function WalletProvider({ children }) {
     loadWallet(password)
   }
 
-  async function createAddress(coinCode) {
-    // TODO: Implement address generation based on coinCode argument
+  async function createAddress(code) {
+    // TODO: Implement address generation based on code argument
     setEvent('creating_address')
-    const privateKey = generatePrivateKey()
-    const address = getAddress(privateKey)
-    const account = { address, privateKey, balance: 0, transactions: [] }
-    const newAccounts = { btc: [...accounts.btc, account] }
+    const privateKey = generatePrivateKey(true)
+    const address = getAddress(privateKey, true)
+    const account = { code, address, privateKey, balance: 0 }
+    const newAccounts = [...accounts, account]
     await saveWallet(newAccounts, password)
     setAccounts(newAccounts)
     setEvent('address_created')
   }
 
-  // function toAccounts(privateKeys) {
-  //   const keyToAccount = privateKey => ({ 
-  //     address: getAddress(privateKey), 
-  //     privateKey
-  //   })
-  //   const keysToAccounts = map(keyToAccount)
-  //   return map(keysToAccounts, privateKeys)
-  // }
+  function syncAccountsWithBlockchains() {
+    accounts.map(acc => ({ ...acc, }))
+    Object
+    .entries(accounts)
+    .map(([id, accs]) => accs.forEach())
+
+    //const accoun
+    //const prices = await Promise.all(coinIds.map(getPriceInUsd))
+  }
 
   console.log('WalletProvider', status)
 
