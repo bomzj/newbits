@@ -17,7 +17,7 @@ export function getAddress(privateKey, isTestnet = false) {
   return address
 }
 
-export async function getBalance(address, isTestnet) {
+export async function fetchBalance(address, isTestnet) {
   const url = isTestnet 
     ? 'https://api.blockcypher.com/v1/btc/test3/addrs/'
     : 'https://api.blockcypher.com/v1/btc/main/addrs/'

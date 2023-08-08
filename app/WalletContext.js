@@ -1,10 +1,10 @@
 import { useContext, createContext, useState, useEffect, useCallback } from 'react'
 import { tryCatch, pipeWith, always, ifElse, identity, compose, 
-  cond, either, is, or, bind, invoker, map } from 'ramda'
+  cond, either, is, or, bind, invoker, map, partialRight } from 'ramda'
 import { isError, isOk } from './result'
 import { useSessionStorage } from './useSessionStorage'
 import { decryptFromLocalStorage, encryptToLocalStorage } from './encryptedLocalStorage'
-import { generatePrivateKey, getAddress, getBalance } from './bitcoin'
+import { generatePrivateKey, getAddress, fetchBalance } from './bitcoin'
 
 const WalletContext = createContext()
 
@@ -13,7 +13,7 @@ const WalletContext = createContext()
  * @typedef {{ 
    status: WalletStatus, 
    error,
-   accounts: {},
+   accounts: { code, address, privateKey, balance }[],
    event: Event,
    createWallet(password),
    unlockWallet(password),
@@ -47,6 +47,15 @@ export function WalletProvider({ children }) {
     loadWallet(password)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Sync balances every 1 minute
+  useEffect(() => {
+    if (status != 'loaded') return
+    syncBalances()
+    const intervalId = setInterval(syncBalances, 60 * 1000)
+    return () => clearInterval(intervalId)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status])
   
   async function loadWallet(password) {
     setStatus('loading')
@@ -100,14 +109,14 @@ export function WalletProvider({ children }) {
     setEvent('address_created')
   }
 
-  function syncAccountsWithBlockchains() {
-    accounts.map(acc => ({ ...acc, }))
-    Object
-    .entries(accounts)
-    .map(([id, accs]) => accs.forEach())
-
-    //const accoun
-    //const prices = await Promise.all(coinIds.map(getPriceInUsd))
+  async function syncBalances() {
+    // update balances
+    //const fetchBalanceFromTestnet = partialRight(fetchBalance, true)
+    const fetchingBalances = accounts.map(x => fetchBalance(x.address, true))
+    const balances = await Promise.all(fetchingBalances)
+    const newAccounts = accounts.map((acc, i) => ({ ...acc, balance: balances[i] }))
+    setAccounts(newAccounts)
+    saveWallet(newAccounts, password)
   }
 
   console.log('WalletProvider', status)

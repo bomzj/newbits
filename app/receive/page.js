@@ -8,8 +8,6 @@ import { useWallet } from '../WalletContext'
 
 export default function ReceivePage() {
   const { event, accounts, createAddress } = useWallet()
-  
-  const currentAccounts = prop('btc', accounts)
 
   function onCreateAddressClick(e) {
     createAddress('btc')
@@ -32,7 +30,7 @@ export default function ReceivePage() {
         </table>
 
         <ul>
-          {currentAccounts.map(account => 
+          {accounts.map(account => 
             <li key={account.address}>
               <hgroup>
                 <h5>{account.address}</h5>
