@@ -1,6 +1,9 @@
 import ECPairFactory from 'ecpair'
 import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs'
 import * as bitcoin from 'bitcoinjs-lib'
+import { tryCatch, pipeWith, always, ifElse, identity, compose, 
+  cond, either, is, or, bind, invoker, map, partialRight, andThen } from 'ramda'
+import { Either } from 'ramda-fantasy'
 
 const ECPair = ECPairFactory(ecc)
 
@@ -17,14 +20,16 @@ export function getAddress(privateKey, isTestnet = false) {
   return address
 }
 
-export async function fetchBalance(address, isTestnet) {
-  const url = isTestnet 
-    ? 'https://api.blockcypher.com/v1/btc/test3/addrs/'
-    : 'https://api.blockcypher.com/v1/btc/main/addrs/'
-
+export async function fetchBalances(addresses, isTestnet) {
+  const network =  isTestnet ? 'test3' : 'main'
+  const url = `https://api.blockcypher.com/v1/btc/${network}/addrs/` + addresses.join(';')
+  
   return (
-    fetch(url + address)
-    .then((res) => res.json())
-    .then(data => data.balance * 0.00000001)
+    fetch(url)
+    .then(res => res.json())
+    .then(data => Array.isArray(data) ? data : [data])
+    .then(map(i => i.balance * 0.00000001))
+    .then(Either.Right)
+    .catch(Either.Left)
   )
 }

@@ -4,7 +4,7 @@ import { tryCatch, pipeWith, always, ifElse, identity, compose,
 import { isError, isOk } from './result'
 import { useSessionStorage } from './useSessionStorage'
 import { decryptFromLocalStorage, encryptToLocalStorage } from './encryptedLocalStorage'
-import { generatePrivateKey, getAddress, fetchBalance } from './bitcoin'
+import { generatePrivateKey, getAddress, fetchBalances } from './bitcoin'
 
 const WalletContext = createContext()
 
@@ -110,13 +110,17 @@ export function WalletProvider({ children }) {
   }
 
   async function syncBalances() {
-    // update balances
-    //const fetchBalanceFromTestnet = partialRight(fetchBalance, true)
-    const fetchingBalances = accounts.map(x => fetchBalance(x.address, true))
-    const balances = await Promise.all(fetchingBalances)
-    const newAccounts = accounts.map((acc, i) => ({ ...acc, balance: balances[i] }))
-    setAccounts(newAccounts)
-    saveWallet(newAccounts, password)
+    const addresses = accounts.map(i => i.address)
+    const balancesResult = await fetchBalances(addresses, true)
+    
+    if (isOk(balancesResult)) {
+      const newAccounts = 
+        accounts.map((acc, i) => ({ ...acc, balance: balancesResult.value[i] }))
+      setAccounts(newAccounts)
+      saveWallet(newAccounts, password)
+    } else {
+      console.error('Failed to sync balances.')
+    }
   }
 
   console.log('WalletProvider', status)
