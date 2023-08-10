@@ -26,7 +26,9 @@ export async function fetchBalances(addresses, isTestnet) {
   
   return (
     fetch(url)
-    .then(res => res.json())
+    .then(
+      ifElse(res => res.ok, res => res.json(), res => Promise.reject(res))
+    )
     .then(data => Array.isArray(data) ? data : [data])
     .then(
       map(i => ({ 
