@@ -28,7 +28,12 @@ export async function fetchBalances(addresses, isTestnet) {
     fetch(url)
     .then(res => res.json())
     .then(data => Array.isArray(data) ? data : [data])
-    .then(map(i => i.balance * 0.00000001))
+    .then(
+      map(i => ({ 
+        address: i.address, 
+        balance: i.balance * 0.00000001 
+      }))
+    )
     .then(Either.Right)
     .catch(Either.Left)
   )

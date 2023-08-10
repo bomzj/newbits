@@ -114,8 +114,14 @@ export function WalletProvider({ children }) {
     const balancesResult = await fetchBalances(addresses, true)
     
     if (isOk(balancesResult)) {
-      const newAccounts = 
-        accounts.map((acc, i) => ({ ...acc, balance: balancesResult.value[i] }))
+      const balanceBy = addr =>
+        balancesResult.value.find(i => i.address == addr).balance
+
+      const newAccounts = accounts.map(account => ({ 
+        ...account, 
+        balance: balanceBy(account.address)
+      }))
+
       setAccounts(newAccounts)
       saveWallet(newAccounts, password)
     } else {
