@@ -52,3 +52,46 @@ body > footer, body > header, body > main {
 td h1 {
   margin-bottom: 10px;
 }
+
+/* Send Page styles */
+[role=group] {
+  width: 100%;
+}
+
+.address-dropdown {
+  a {
+    --pico-color: #373c44;
+  }
+
+  [role=group] {
+    width: calc(100% - 1.5rem)
+  }
+
+  [role=group] > :first-child {
+    width: 100%;
+  }
+}
+
+/* Validation message for inputs wrapped in group */
+[role=group]:has(input) + small {
+  display: block;
+  width: 100%;
+  margin-top: calc(var(--pico-spacing) * -.75);
+  margin-bottom: var(--pico-spacing);
+  color: var(--pico-muted-color);
+}
+
+[role=group]:has(input[aria-invalid=true]) + small {
+  color: var(--pico-del-color);
+}
+
+/* Remove spinners for number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}

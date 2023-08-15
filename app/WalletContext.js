@@ -1,10 +1,14 @@
 import { useContext, createContext, useState, useEffect, useCallback } from 'react'
-import { tryCatch, pipeWith, always, ifElse, identity, compose, 
-  cond, either, is, or, bind, invoker, map, partialRight } from 'ramda'
+import { tryCatch, pipeWith, always, ifElse, identity, compose, prop, pipe,
+  cond, either, is, or, bind, invoker, map, partialRight, sort, descend } from 'ramda'
 import { isError, isOk } from './result'
 import { useSessionStorage } from './useSessionStorage'
 import { decryptFromLocalStorage, encryptToLocalStorage } from './encryptedLocalStorage'
-import { generatePrivateKey, getAddress, fetchBalances } from './bitcoin'
+import { 
+  generatePrivateKey, 
+  getAddress, 
+  fetchBalances, 
+  validateAddress as _validateAddress } from './bitcoin'
 
 const WalletContext = createContext()
 
@@ -17,7 +21,8 @@ const WalletContext = createContext()
    event: Event,
    createWallet(password),
    unlockWallet(password),
-   createAddress(coinCode)
+   createAddress(code),
+   validateAddress(code, address)
   }} Wallet 
 */
 
@@ -103,10 +108,19 @@ export function WalletProvider({ children }) {
     const privateKey = generatePrivateKey(true)
     const address = getAddress(privateKey, true)
     const account = { code, address, privateKey, balance: 0 }
-    const newAccounts = [...accounts, account]
+    const newAccounts = sortByValue([...accounts, account])
     await saveWallet(newAccounts, password)
     setAccounts(newAccounts)
     setEvent('address_created')
+  }
+
+  function validateAddress(code, address) {
+    return _validateAddress(address, false)
+  }
+
+  function sortByValue(accounts) {
+    const byBalance = descend(prop('balance'))
+    return sort(byBalance, accounts)
   }
 
   async function syncBalances() {
@@ -117,10 +131,15 @@ export function WalletProvider({ children }) {
       const balanceBy = addr =>
         balancesResult.value.find(i => i.address == addr).balance
 
-      const newAccounts = accounts.map(account => ({ 
-        ...account, 
-        balance: balanceBy(account.address)
-      }))
+      // const newAccounts = accounts.map(account => ({ 
+      //   ...account, 
+      //   balance: balanceBy(account.address)
+      // }))
+
+      const newAccounts = pipe(
+        map(account => ({ ...account, balance: balanceBy(account.address)})),
+        sortByValue
+      )(accounts)
 
       setAccounts(newAccounts)
       saveWallet(newAccounts, password)
@@ -129,15 +148,21 @@ export function WalletProvider({ children }) {
     }
   }
 
+  function sendTransaction({ code, fromAddress, toAddress, amount }) {
+
+  }
+
   console.log('WalletProvider', status)
 
   const walletContext = {
     status,
     accounts,
     event,
+
     createWallet,
     unlockWallet,
-    createAddress
+    createAddress,
+    validateAddress,
   }
   
   return (

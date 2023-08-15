@@ -1,9 +1,18 @@
+// TODO: move away from legacy ecpair to bip32 https://github.com/bitcoinjs/bitcoinjs-lib/issues/1746#issuecomment-968371375
 import ECPairFactory from 'ecpair'
 import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs'
 import * as bitcoin from 'bitcoinjs-lib'
 import { tryCatch, pipeWith, always, ifElse, identity, compose, 
   cond, either, is, or, bind, invoker, map, partialRight, andThen } from 'ramda'
 import { Either } from 'ramda-fantasy'
+
+// Fix for Bitcoinjs-lib https://github.com/bitcoinjs/bitcoinjs-lib/issues/1969
+if (typeof window !== 'undefined') {
+  import('buffer').then(module => 
+    // eslint-disable-next-line fp/no-mutation
+    Uint8Array.prototype.readUint8 = module.Buffer.prototype.readUint8
+  )
+}
 
 const ECPair = ECPairFactory(ecc)
 
@@ -39,4 +48,11 @@ export async function fetchBalances(addresses, isTestnet) {
     .then(Either.Right)
     .catch(Either.Left)
   )
+}
+
+export function validateAddress(address, isTestnet) {
+  const network = isTestnet ? bitcoin.networks.testnet : bitcoin.networks.bitcoin
+  
+  return !!tryCatch(bitcoin.address.toOutputScript, always(false))
+    (address, network)
 }
