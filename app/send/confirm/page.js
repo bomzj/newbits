@@ -9,7 +9,7 @@ import { isOk } from '@/app/result'
 
 // eslint-disable-next-line complexity
 export default function ConfirmTransactionPage() {
-  const { back } = useRouter()
+  const { push } = useRouter()
   const { sendTransaction, event } = useWallet()
   const [tx, setTx] = useState()
   const [price, setPrice] = useState()
@@ -24,7 +24,7 @@ export default function ConfirmTransactionPage() {
 
     // do not show page if there is nothing to confirm
     if (!json) {
-      back()
+      push('/')
       return
     }
 
@@ -39,7 +39,7 @@ export default function ConfirmTransactionPage() {
     else {
       console.error('Failed to fetch prices.')
     }
-  }, [back])
+  }, [push])
   
   useEffect(() => {
     init()

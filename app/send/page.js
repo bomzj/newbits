@@ -1,10 +1,8 @@
 'use client'
-import { useState, useEffect, useCallback, useRef} from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
-import { times, is, prop, on, gt, lte, both, __, allPass, always, and } from 'ramda'
+import { and } from 'ramda'
 import { useWallet } from '../WalletContext'
-import { fetchPriceInUsd } from '../price'
 
 export default function SendPage() {
   const { event, accounts, validateAddress } = useWallet()
@@ -64,8 +62,9 @@ export default function SendPage() {
   function onSubmit(e) {
     e.preventDefault()
     setSubmitClicked(true)
-
-    if (!isAmountValid && !isRecipientAddressValid) return
+    
+    const isValid = isAmountValid && isRecipientAddressValid
+    if (!isValid) return
     
     const tx = JSON.stringify({ 
       code, 
