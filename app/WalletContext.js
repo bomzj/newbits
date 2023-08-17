@@ -22,11 +22,18 @@ const WalletContext = createContext()
    createWallet(password),
    unlockWallet(password),
    createAddress(code),
-   validateAddress(code, address)
+   validateAddress(code, address),
+   sendTransaction({ code, fromAddress, toAddress, amount })
   }} Wallet 
 */
 
-/** @typedef {'creating_address' | 'address_created' } Event */
+/** @typedef {
+  'creating_address' | 'address_created' |
+  'sending_transaction' | 'transaction_sent' | 'transaction_failed'
+  } 
+ Event 
+ 
+*/
 
 /** @returns {Wallet} */
 export const useWallet = () => useContext(WalletContext)
@@ -115,7 +122,7 @@ export function WalletProvider({ children }) {
   }
 
   function validateAddress(code, address) {
-    return _validateAddress(address, false)
+    return _validateAddress(address, true)
   }
 
   function sortByValue(accounts) {
@@ -149,7 +156,8 @@ export function WalletProvider({ children }) {
   }
 
   function sendTransaction({ code, fromAddress, toAddress, amount }) {
-
+    setEvent('sending_transaction')
+    setTimeout(() => setEvent('transaction_sent'), 2000)
   }
 
   console.log('WalletProvider', status)
@@ -163,6 +171,7 @@ export function WalletProvider({ children }) {
     unlockWallet,
     createAddress,
     validateAddress,
+    sendTransaction
   }
   
   return (

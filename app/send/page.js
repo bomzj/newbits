@@ -4,10 +4,11 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { times, is, prop, on, gt, lte, both, __, allPass, always, and } from 'ramda'
 import { useWallet } from '../WalletContext'
-import { getPriceInUsd } from '../price'
+import { fetchPriceInUsd } from '../price'
 
 export default function SendPage() {
   const { event, accounts, validateAddress } = useWallet()
+  const { push } = useRouter()
   const senderDropdownRef = useRef()
   const [senderAddress, setSenderAddress] = useState(() => accounts[0].address)
   const balance = accounts.find(i => i.address == senderAddress).balance
@@ -24,6 +25,19 @@ export default function SendPage() {
   const isRecipientAddressValid = validateAddress(code, recipientAddress)
   const invalidRecipientAddressAttr = 
     and(submitClicked, !isRecipientAddressValid) || null
+
+  useEffect(restoreUnconfirmedTransaction, [])
+  
+  function restoreUnconfirmedTransaction() {
+    const json = sessionStorage.getItem('unconfirmed_transaction')
+
+    if (!json) return
+
+    const tx = JSON.parse(json)
+    setSenderAddress(tx.from)
+    setRecipientAddress(tx.to)
+    setAmount(tx.amount)
+  }
 
   function onSenderAddressClick(e) {
     e.preventDefault()
@@ -47,10 +61,12 @@ export default function SendPage() {
     setAmount(balance)
   }
 
-  function onSendClick(e) {
+  function onSubmit(e) {
     e.preventDefault()
     setSubmitClicked(true)
 
+    if (!isAmountValid && !isRecipientAddressValid) return
+    
     const tx = JSON.stringify({ 
       code, 
       from: senderAddress,
@@ -59,13 +75,14 @@ export default function SendPage() {
     })
 
     sessionStorage.setItem('unconfirmed_transaction', tx)
+    push(`/send/confirm`)
   }
 
   return (
     <>
       <h1>Send Bitcoin</h1>
       
-      <form onSubmit={onSendClick}>
+      <form onSubmit={onSubmit}>
         <div>
           <label>
             From
@@ -100,7 +117,7 @@ export default function SendPage() {
                 aria-invalid={invalidRecipientAddressAttr}
                 readOnly
               />
-              <button onClick={onRecipientAddressPasteClick}>Paste</button>
+              <button onClick={onRecipientAddressPasteClick} type='button'>Paste</button>
             </div>
           </label>
           <label>
@@ -114,12 +131,12 @@ export default function SendPage() {
                 type='number'
                 aria-invalid={invalidAmountAttr}
               />
-              <button onClick={onMaxClick}>&nbsp;Max&nbsp;</button>
+              <button onClick={onMaxClick} type='button'>&nbsp;Max&nbsp;</button>
             </div>
           </label>
         </div>
-
-        <input type="submit" value="Send" />
+        
+        <input type="submit" value="Next" />
       </form>
     </>
   )

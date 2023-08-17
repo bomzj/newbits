@@ -73,17 +73,21 @@ td h1 {
 }
 
 /* Validation message for inputs wrapped in group */
-[role=group]:has(input) + small {
+del {
+  text-decoration: none;
+  color: var(--pico-del-color);
+}
+/* [role=group]:has(input) + small {
   display: block;
   width: 100%;
   margin-top: calc(var(--pico-spacing) * -.75);
   margin-bottom: var(--pico-spacing);
   color: var(--pico-muted-color);
-}
+} */
 
-[role=group]:has(input[aria-invalid=true]) + small {
+/* [role=group]:has(input[aria-invalid=true]) + small {
   color: var(--pico-del-color);
-}
+} */
 
 /* Remove spinners for number inputs */
 input::-webkit-outer-spin-button,

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { tryCatch, pipeWith, always, ifElse, identity, compose, 
   cond, either, is, or, bind, invoker, map, groupBy } from 'ramda'
 import { useWallet } from './WalletContext'
-import { formatInUsd, getPriceInUsd } from './price'
+import { toUsdFormat, fetchPriceInUsd } from './price'
 
 export default function HomePage() {
   const { accounts } = useWallet()
@@ -16,7 +16,7 @@ export default function HomePage() {
     const byCode = groupBy(acc => acc.code)
     const accountsByCode = byCode(accounts) 
     const codes = Object.keys(accountsByCode)
-    const prices = await Promise.all(codes.map(getPriceInUsd))
+    const prices = await Promise.all(codes.map(fetchPriceInUsd))
     
     const balances =
       Object
@@ -38,7 +38,7 @@ export default function HomePage() {
   return (
     <>
       <section>
-        <h1 className='center'>{formatInUsd(total)}</h1>
+        <h1 className='center'>{toUsdFormat(total)}</h1>
       </section>
       <section>
         <table>
@@ -57,7 +57,7 @@ export default function HomePage() {
               <td>
                 <hgroup>
                   <h3>{x.balance}&nbsp;BTC</h3>
-                  <p>{formatInUsd(x.valueInUsd)}</p>
+                  <p>{toUsdFormat(x.valueInUsd)}</p>
                 </hgroup> 
               </td>
             </tr>
