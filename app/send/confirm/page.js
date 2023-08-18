@@ -20,7 +20,7 @@ export default function ConfirmTransactionPage() {
   const inUsd = amount => toUsdFormat(amount * price)
 
   const init = useCallback(async () => {
-    const json = sessionStorage.getItem('unconfirmed_transaction')
+    const json = sessionStorage.getItem('unsent_tx')
 
     // do not show page if there is nothing to confirm
     if (!json) {
@@ -55,7 +55,7 @@ export default function ConfirmTransactionPage() {
       amount: tx.amount
     })
 
-    sessionStorage.removeItem('unconfirmed_transaction')
+    sessionStorage.removeItem('unsent_tx')
   }
 
   return tx && (

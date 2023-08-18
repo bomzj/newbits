@@ -27,7 +27,7 @@ export default function SendPage() {
   useEffect(restoreUnconfirmedTransaction, [])
   
   function restoreUnconfirmedTransaction() {
-    const json = sessionStorage.getItem('unconfirmed_transaction')
+    const json = sessionStorage.getItem('unsent_tx')
 
     if (!json) return
 
@@ -73,7 +73,7 @@ export default function SendPage() {
       amount 
     })
 
-    sessionStorage.setItem('unconfirmed_transaction', tx)
+    sessionStorage.setItem('unsent_tx', tx)
     push(`/send/confirm`)
   }
 
