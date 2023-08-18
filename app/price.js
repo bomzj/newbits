@@ -13,7 +13,7 @@ const toCode = coingeckoId =>
   .entries(codesToCoingeckoIds)
   .find(([key, val]) => val == coingeckoId )[0]
 
-// TODO:
+// TODO: implement fetching prices of multiple cryptos at once
 // As of now, it uses client-side caching/memoizing 
 // since this free API is limitted to 10-30 requests/minute.
 // Need to check how this free API blocks by domain or IP-address.
