@@ -32,11 +32,12 @@ a {
 /* Show image even if any table cell has width of 100% */
 td img {
   max-width: initial;
-  margin-bottom: -3px /*16px; /* align with text in other columns */
+  margin-bottom: 40px; /* align with text in other columns */
 }
 
 td:has(img) {
-  padding: 0;
+  padding-right: 0;
+  width: 36px;
 }
 
 td { 
@@ -97,26 +98,7 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-/* [role=group]:has(input) + small {
-  display: block;
-  width: 100%;
-  margin-top: calc(var(--pico-spacing) * -.75);
-  margin-bottom: var(--pico-spacing);
-  color: var(--pico-muted-color);
-} */
-
-/* [role=group]:has(input[aria-invalid=true]) + small {
-  color: var(--pico-del-color);
-} */
-
-/* :where(p, h6) + small {
-  color: var(--pico-muted-color)
-} */
-
-/* :where(input, select, textarea, .grid) + small {
-  display: block;
-  width: 100%;
-  margin-top: calc(var(--pico-spacing) * -0.75);
-  margin-bottom: var(--pico-spacing);
-  color: var(--pico-muted-color);
-} */
+/* no text wrap in last column when some column has 100% width */
+.grid > * {
+  min-width: auto;
+}

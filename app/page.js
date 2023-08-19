@@ -45,33 +45,31 @@ export default function HomePage() {
 
   return (
     <>
-      <section>
-        <h1 className='center'>{toUsdFormat(total)}</h1>
-      </section>
-      <section>
-        <table>
-          <tbody>
+      <h1 className='center1'>{toUsdFormat(total)}</h1>
+
+      <table className='center1'>
+        <tbody>
           {balances.map(i => (
             <tr key={i.code}>
               <td>
-                <Image src={"https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/btc.svg"} width={48} height={48} alt='bitcoin'/>
+                <Image src={"https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/btc.svg"} width={36} height={36} alt='bitcoin'/>
               </td>
-              <td style={{width: '100%'}}>
-                <hgroup>
-                  <strong>Bitcoin</strong>
-                </hgroup>
+              <td style={{ 'max-width': '100px'}}>
+                <div className='grid'>
+                  <p>Bitcoin</p>
+                </div>
+                <small>&nbsp;</small>
               </td>
               <td>
-                <hgroup>
-                  <h3>{i.balance}&nbsp;BTC</h3>
-                  <p>{toUsdFormat(i.valueInUsd)}</p>
-                </hgroup> 
+                <div className='grid'>
+                  <p>{i.balance}&nbsp;BTC</p>
+                </div>
+                <small>{toUsdFormat(i.valueInUsd)}</small>
               </td>
             </tr>
           ))}
-          </tbody>
-        </table>
-      </section>
+        </tbody>
+      </table>
     </>
   )
 }
