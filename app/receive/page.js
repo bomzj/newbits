@@ -13,6 +13,11 @@ export default function ReceivePage() {
     createAddress('btc')
   }
 
+  function onCopy(e) {
+    e.preventDefault()
+    navigator.clipboard.writeText(e.target.dataset.address)
+  }
+
   return (
     <>
       <h1>Receive Bitcoin</h1>
@@ -29,7 +34,11 @@ export default function ReceivePage() {
               </td>
               <td>
                 <div className='grid'>
-                  <p><a href='#'>Copy</a></p>
+                  <p>
+                    <a href='#' data-address={account.address} onClick={onCopy}>
+                      Copy
+                    </a>
+                  </p>
                 </div>
                 <small>&nbsp;</small>
               </td>
