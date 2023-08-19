@@ -15,40 +15,34 @@ export default function ReceivePage() {
 
   return (
     <>
-      <section>
-        <table>
-          <tbody>
-            <tr>
+      <h1>Receive Bitcoin</h1>
+
+      <table style={{ width: 'initial'}}>
+        <tbody>
+          {accounts.map(account => 
+            <tr key={account.address}>
               <td>
-                <Image src={"https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/btc.svg"} width={48} height={48} alt='bitcoin'/>
+                <div className='grid'>
+                  <p>{account.address}</p>
+                </div>
+                <small>{account.balance}&nbsp;BTC</small>
               </td>
-              <td style={{width: '100%'}}>
-                <h1>Bitcoin</h1>
+              <td>
+                <div className='grid'>
+                  <p><a href='#'>Copy</a></p>
+                </div>
+                <small>&nbsp;</small>
               </td>
             </tr>
-          </tbody>
-        </table>
-
-        <ul>
-          {accounts.map(account => 
-            <li key={account.address}>
-              <hgroup>
-                <h5>{account.address}</h5>
-                <p>{account.balance} BTC</p>
-              </hgroup>
-            </li>
           )}
-          <li>
-            <button 
-              className="outline secondary" 
-              onClick={onCreateAddressClick}
-              disabled={event == 'creating_address'}
-            >
-              Create a new address
-            </button>
-          </li>
-        </ul>
-      </section>
+        </tbody>
+      </table>
+     
+     <div role='group'>
+        <button onClick={onCreateAddressClick} disabled={event == 'creating_address'} >
+          Generate a new address
+        </button>
+      </div>
     </>
   )
 }

@@ -20,6 +20,10 @@ a[role=button] {
   margin-bottom: var(--pico-spacing);
 }
 
+a {
+  text-decoration: none;
+}
+
 .center {
   display: flex;
   justify-content: center;
@@ -28,6 +32,11 @@ a[role=button] {
 /* Show image even if any table cell has width of 100% */
 td img {
   max-width: initial;
+  margin-bottom: -3px /*16px; /* align with text in other columns */
+}
+
+td:has(img) {
+  padding: 0;
 }
 
 td { 
@@ -46,11 +55,6 @@ ul li {
 /* Decrease enormous top padding */
 body > footer, body > header, body > main {
   padding: calc(var(--pico-block-spacing-vertical) / 2) 0;
-}
-
-/* Receive Page styles */
-td h1 {
-  margin-bottom: 10px;
 }
 
 /* Send Page styles */
@@ -72,21 +76,14 @@ td h1 {
   }
 }
 
-/* Validation message for inputs wrapped in group */
-del {
-  text-decoration: none;
+/* Notifications */
+p.error {
   color: var(--pico-del-color);
-}
-/* [role=group]:has(input) + small {
-  display: block;
-  width: 100%;
-  margin-top: calc(var(--pico-spacing) * -.75);
-  margin-bottom: var(--pico-spacing);
-  color: var(--pico-muted-color);
-} */
 
-/* [role=group]:has(input[aria-invalid=true]) + small {
-  color: var(--pico-del-color);
+}
+/* 
+p.success {
+
 } */
 
 /* Remove spinners for number inputs */
@@ -99,3 +96,27 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+/* [role=group]:has(input) + small {
+  display: block;
+  width: 100%;
+  margin-top: calc(var(--pico-spacing) * -.75);
+  margin-bottom: var(--pico-spacing);
+  color: var(--pico-muted-color);
+} */
+
+/* [role=group]:has(input[aria-invalid=true]) + small {
+  color: var(--pico-del-color);
+} */
+
+/* :where(p, h6) + small {
+  color: var(--pico-muted-color)
+} */
+
+/* :where(input, select, textarea, .grid) + small {
+  display: block;
+  width: 100%;
+  margin-top: calc(var(--pico-spacing) * -0.75);
+  margin-bottom: var(--pico-spacing);
+  color: var(--pico-muted-color);
+} */
