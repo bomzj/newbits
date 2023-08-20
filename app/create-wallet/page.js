@@ -37,7 +37,7 @@ export default function CreateWalletPage() {
       <p>
         Protect your web crypto wallet with a strong password 
         to ensure the highest level of security. 
-        Remember, NewBits is a non-custodial platform, which means we don&apos;t have 
+        Remember, Newbits is a non-custodial platform, which means we don&apos;t have 
         access to your encrypted wallet and cannot assist with its restoration.
       </p>
       <form onSubmit={onCreateButtonClick}>
