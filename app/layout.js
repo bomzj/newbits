@@ -12,6 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="light">
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         {/* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"/> */}
       </head>
       <body>

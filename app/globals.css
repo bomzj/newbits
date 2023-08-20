@@ -11,7 +11,7 @@
   }
 
   body > nav.container {
-    max-width: 950px;
+    max-width: 768px;
   }
 }
 
