@@ -45,16 +45,16 @@ export default function HomePage() {
 
   return (
     <>
-      <h1 className='center1'>{toUsdFormat(total)}</h1>
+      <h1>{toUsdFormat(total)}</h1>
 
-      <table className='center1'>
+      <table>
         <tbody>
           {balances.map(i => (
             <tr key={i.code}>
               <td>
                 <Image src={"https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/btc.svg"} width={36} height={36} alt='bitcoin'/>
               </td>
-              <td style={{ 'max-width': '100px'}}>
+              <td>
                 <div className='grid'>
                   <p>Bitcoin</p>
                 </div>

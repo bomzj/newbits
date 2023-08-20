@@ -1,4 +1,4 @@
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   /* this only works for element without 'container' class */
   /* Not used */
   /*body>footer, body>header, body>main {
@@ -24,6 +24,7 @@ a {
   text-decoration: none;
 }
 
+/* Not used */
 .center {
   display: flex;
   justify-content: center;
@@ -77,7 +78,7 @@ body > footer, body > header, body > main {
   }
 }
 
-/* Notifications */
+/* Notifications (Not used yet), make them use input valid/invalid box border/icon */
 p.error {
   color: var(--pico-del-color);
 
@@ -99,6 +100,6 @@ input[type=number] {
 }
 
 /* no text wrap in last column when some column has 100% width */
-.grid > * {
+/* .grid > * {
   min-width: auto;
-}
+} */

@@ -121,7 +121,7 @@ export default function ConfirmTransactionPage() {
         <i><ins>Transaction sent.</ins></i> 
       }
       {event == 'transaction_failed' && 
-        <del>An error occurred while sending the transaction.</del> 
+        <p className='error'>An error occurred while sending the transaction.</p> 
       }
     </>
   )
