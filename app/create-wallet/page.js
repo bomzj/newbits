@@ -58,7 +58,7 @@ export default function CreateWalletPage() {
         {shouldValidatePassword && !isPasswordValid &&
           <small id="invalid-helper">Password should not be empty!</small>
         }
-        <input type="submit" value="Create" disabled={walletCreating} />
+        <input className='secondary' type="submit" value="Create" disabled={walletCreating} />
       </form>
     </section>
   )

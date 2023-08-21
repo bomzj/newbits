@@ -4,6 +4,8 @@ import { WalletProvider } from './WalletContext'
 import WaitWalletInit from './WaitWalletInit'
 import ProtectRoute from './ProtectRoute'
 import Nav from './Nav'
+import Image from 'next/image'
+import Link from 'next/link'
 
 export default function WalletLayout({ children }) {
   console.log('WalletLayout')
@@ -15,7 +17,6 @@ export default function WalletLayout({ children }) {
           <main className="container">
             {children}
           </main>
-          
         </ProtectRoute>
       </WaitWalletInit>
     </WalletProvider>

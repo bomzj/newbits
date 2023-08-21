@@ -97,10 +97,10 @@ export default function ConfirmTransactionPage() {
           </tr>
           <tr>
             <td>
-            <strong>Total</strong>
+              <strong>Total</strong>
             </td>
             <td>
-            {total}&nbsp;BTC <sup>{inUsd(total)}</sup>
+              {total}&nbsp;BTC <sup>{inUsd(total)}</sup>
             </td>
           </tr>
         </tbody>
@@ -109,6 +109,7 @@ export default function ConfirmTransactionPage() {
       {event != 'transaction_sent' &&
         <div role='group'>
           <button 
+            className='secondary'
             onClick={onSendClick} 
             aria-busy={event == 'sending_transaction'}
             disabled={event == 'sending_transaction'}

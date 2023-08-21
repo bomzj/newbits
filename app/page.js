@@ -3,10 +3,11 @@ import { useState, useEffect, useCallback} from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { tryCatch, pipeWith, always, ifElse, identity, compose, 
-  cond, either, is, or, bind, invoker, map, groupBy } from 'ramda'
+  cond, either, is, or, bind, invoker, map, groupBy, isEmpty } from 'ramda'
 import { useWallet } from './WalletContext'
 import { toUsdFormat, fetchPriceInUsd } from './price'
 import { isError } from './result'
+import Link from 'next/link'
 
 export default function HomePage() {
   const { accounts } = useWallet()
@@ -47,6 +48,13 @@ export default function HomePage() {
     <>
       <h1>{toUsdFormat(total)}</h1>
 
+      {isEmpty(accounts) &&
+        <p>
+          The wallet is empty. 
+          Go to <Link href='/receive'>Receive</Link> page to create accounts.
+        </p>
+      } 
+    
       <table>
         <tbody>
           {balances.map(i => (

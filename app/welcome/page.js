@@ -9,7 +9,7 @@ import Link from 'next/link'
         Secure, lightweight with a modern UI, non-custodial web crypto wallet. 
         You solely own your keys; Newbits doesn&apos;t have access to them.  
       </p>
-      <Link href="/create-wallet" role='button'>Create a new wallet</Link>
+      <Link href="/create-wallet" role='button' className='secondary'>Create a new wallet</Link>
       <Link href="/restore-wallet" role='button' className="secondary outline">Restore a wallet</Link>
       <footer>
         <small>No app installations or browser extensions needed - access your assets with ease.</small>

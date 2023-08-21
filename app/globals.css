@@ -6,13 +6,13 @@
   }*/
 
   /* Probably, a page can define its width itself */
-  body > main.container {
+  body > main.container, body > footer.container {
     max-width: 768px;
   }
 
-  body > nav.container {
+  /* body > nav.container {
     max-width: 768px;
-  }
+  } */
 }
 
 a[role=button] {
@@ -103,3 +103,16 @@ input[type=number] {
 /* .grid > * {
   min-width: auto;
 } */
+
+/* Main navigation */
+body > nav ul li {
+  padding-top: 0;
+  padding-bottom: 0;
+  /* padding-left: 0;  */
+}
+
+body > nav.container-fluid {
+  padding-left: 0;
+  box-shadow: 0 1px 0 var(--pico-muted-border-color);
+  max-width: 1920px;
+}

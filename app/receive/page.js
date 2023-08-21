@@ -35,7 +35,12 @@ export default function ReceivePage() {
               <td>
                 <div className='grid'>
                   <p>
-                    <a href='#' data-address={account.address} onClick={onCopy}>
+                    <a 
+                      className='secondary'
+                      href='#' 
+                      data-address={account.address} 
+                      onClick={onCopy}
+                    >
                       Copy
                     </a>
                   </p>
@@ -48,7 +53,10 @@ export default function ReceivePage() {
       </table>
      
      <div role='group'>
-        <button onClick={onCreateAddressClick} disabled={event == 'creating_address'} >
+        <button 
+          className='secondary'
+          onClick={onCreateAddressClick} 
+          disabled={event == 'creating_address'} >
           Generate a new address
         </button>
       </div>

@@ -52,7 +52,7 @@ export default function UnlockWalletPage() {
         {unlockFailed && 
           <small id="invalid-helper">Incorrect password!</small>
         }
-        <input type="submit" value="Unlock" disabled={unlocking} />
+        <input className='secondary' type="submit" value="Unlock" disabled={unlocking} />
       </form>
     </section>
   )

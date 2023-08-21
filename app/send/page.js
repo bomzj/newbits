@@ -1,15 +1,17 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { and } from 'ramda'
+import Link from 'next/link'
+import { and, isEmpty } from 'ramda'
 import { useWallet } from '../WalletContext'
 
+// eslint-disable-next-line complexity
 export default function SendPage() {
   const { event, accounts, validateAddress } = useWallet()
   const { push } = useRouter()
   const senderDropdownRef = useRef()
-  const [senderAddress, setSenderAddress] = useState(() => accounts[0].address)
-  const balance = accounts.find(i => i.address == senderAddress).balance
+  const [senderAddress, setSenderAddress] = useState(() => accounts[0]?.address)
+  const balance = accounts.find(i => i.address == senderAddress)?.balance
   const [recipientAddress, setRecipientAddress] = useState('')
   const [amount, setAmount] = useState('')
   const [submitClicked, setSubmitClicked] = useState()
@@ -80,63 +82,84 @@ export default function SendPage() {
   return (
     <>
       <h1>Send Bitcoin</h1>
+
+      {isEmpty(accounts) &&
+        <p>
+          The wallet is empty. 
+          Go to <Link href='/receive'>Receive</Link> page to create accounts.
+        </p>
+      } 
       
-      <form onSubmit={onSubmit}>
-        <div>
-          <label>
-            From
-            <details className="dropdown address-dropdown" ref={senderDropdownRef}>
-              <summary>
-                <div role='group'>
-                  <p>{senderAddress}</p>
-                  <small>{balance}&nbsp;BTC</small>
-                </div>
-              </summary>
-              <ul>
-                {accounts.map(account => 
-                  <li key={account.address}>
-                    <a href="#" onClick={onSenderAddressClick} data-address={account.address}>
-                      <div role='group'>
-                        <p>{account.address}</p>
-                        <small>{account.balance}&nbsp;BTC</small>
-                      </div>
-                    </a>
-                  </li>
-                )}
-              </ul>
-            </details>
-          </label>
-          <label >
-            To
-            <div role='group'>
-              <input 
-                name="toAddress" 
-                placeholder="Recipient Address" 
-                value={recipientAddress} 
-                aria-invalid={invalidRecipientAddressAttr}
-                readOnly
-              />
-              <button onClick={onRecipientAddressPasteClick} type='button'>Paste</button>
-            </div>
-          </label>
-          <label>
-            Amount
-            <div role='group'>
-              <input 
-                name="amount" 
-                placeholder="0 BTC" 
-                value={amount} 
-                onInput={onAmountInput} 
-                type='number'
-                aria-invalid={invalidAmountAttr}
-              />
-              <button onClick={onMaxClick} type='button'>&nbsp;Max&nbsp;</button>
-            </div>
-          </label>
-        </div>
-        
-        <input type="submit" value="Next" />
-      </form>
+      {!isEmpty(accounts) && 
+        <form onSubmit={onSubmit}>
+          <div>
+            <label>
+              From
+              <details className="dropdown address-dropdown" ref={senderDropdownRef}>
+                <summary>
+                  <div role='group'>
+                    <p>{senderAddress}</p>
+                    <small>{balance}&nbsp;BTC</small>
+                  </div>
+                </summary>
+                <ul>
+                  {accounts.map(account => 
+                    <li key={account.address}>
+                      <a href="#" onClick={onSenderAddressClick} data-address={account.address}>
+                        <div role='group'>
+                          <p>{account.address}</p>
+                          <small>{account.balance}&nbsp;BTC</small>
+                        </div>
+                      </a>
+                    </li>
+                  )}
+                </ul>
+              </details>
+            </label>
+            <label >
+              To
+              <div role='group'>
+                <input 
+                  name="toAddress" 
+                  placeholder="Recipient Address" 
+                  value={recipientAddress} 
+                  aria-invalid={invalidRecipientAddressAttr}
+                  readOnly
+                />
+                <button 
+                  className='secondary'
+                  onClick={onRecipientAddressPasteClick} 
+                  type='button'
+                >
+                  Paste
+                </button>
+              </div>
+            </label>
+            <label>
+              Amount
+              <div role='group'>
+                <input 
+                  name="amount" 
+                  placeholder="0 BTC" 
+                  value={amount} 
+                  onInput={onAmountInput} 
+                  type='number'
+                  aria-invalid={invalidAmountAttr}
+                />
+                <button 
+                  className='secondary'
+                  onClick={onMaxClick} 
+                  type='button'
+                >
+                  &nbsp;Max&nbsp;
+                </button>
+              </div>
+            </label>
+          </div>
+          
+          <input className='secondary' type="submit" value="Next" />
+        </form>
+      }
     </>
   )
 }
