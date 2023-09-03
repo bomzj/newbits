@@ -116,3 +116,18 @@ body > nav.container-fluid {
   box-shadow: 0 1px 0 var(--pico-muted-border-color);
   max-width: 1920px;
 }
+
+/* Not used */
+[role=group]:has(input, select, textarea, .grid) + small {
+  display: block;
+  width: 100%;
+  margin-top: calc(var(--pico-spacing) * -0.75);
+  margin-bottom: var(--pico-spacing);
+  color: var(--pico-muted-color);
+}
+[role=group]:has([aria-invalid=false]) + small {
+  color: var(--pico-ins-color);
+}
+[role=group]:has([aria-invalid=true]) + small {
+  color: var(--pico-del-color);
+}

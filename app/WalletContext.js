@@ -8,26 +8,32 @@ import {
   generatePrivateKey, 
   getAddress, 
   fetchBalances, 
-  validateAddress as _validateAddress } from './bitcoin'
+  validateAddress as _validateAddress,
+  sendTx as sendTx} from './bitcoin'
 
 const WalletContext = createContext()
 
 /** 
  * @typedef {'loading' | 'not_exists' | 'locked' | 'loaded'} WalletStatus
+ * @typedef {{ code, address, privateKey, balance }} Account
  * @typedef {{ 
    status: WalletStatus, 
    error,
-   accounts: { code, address, privateKey, balance }[],
+   accounts: Account[],
+   tx: Object,
    event: Event,
    createWallet(password),
    unlockWallet(password),
    createAddress(code),
    validateAddress(code, address),
+   setTx(tx),
+   accountBy(address: string): Account,
    sendTransaction({ code, fromAddress, toAddress, amount })
   }} Wallet 
 */
 
-/** @typedef {
+/** 
+ * @typedef {
   'creating_address' | 'address_created' |
   'sending_transaction' | 'transaction_sent' | 'transaction_failed'
   } 
@@ -46,8 +52,10 @@ export function WalletProvider({ children }) {
   /** @type [WalletStatus, React.Dispatch<WalletStatus>] */
   const [status, setStatus] = useState('loading')
   const [password, setPassword] = useState() //useSessionStorage('password')
+  /** @type [Account[], React.Dispatch<Account[]>] */
   const [accounts, setAccounts] = useState([])
-  
+  const [tx, setTx] = useState()
+
   // TODO: Rethink wallet statuses to play nicely with events
   /** @type [Event, React.Dispatch<Event>] */
   const [event, setEvent] = useState()
@@ -155,9 +163,8 @@ export function WalletProvider({ children }) {
     }
   }
 
-  function sendTransaction({ code, fromAddress, toAddress, amount }) {
-    setEvent('sending_transaction')
-    setTimeout(() => setEvent('transaction_sent'), 2000)
+  function accountBy(address) {
+    return accounts.find(i => i.address == address)
   }
 
   console.log('WalletProvider', status)
@@ -165,13 +172,15 @@ export function WalletProvider({ children }) {
   const walletContext = {
     status,
     accounts,
+    tx,
     event,
 
     createWallet,
     unlockWallet,
     createAddress,
     validateAddress,
-    sendTransaction
+    setTx,
+    accountBy
   }
   
   return (
